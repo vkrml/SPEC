@@ -1,0 +1,70 @@
+# This is a GitHub Actions workflow file.
+# To use it, create a file named `spec-check.yml` (or any other .yml name)
+# inside the `.github/workflows/` directory of your repository.
+#
+# How to run it:
+# 1. Commit this file to your repository.
+# 2. Go to the "Actions" tab in your GitHub repository.
+# 3. In the left sidebar, you will see "Check Runner Specifications". Click on it.
+# 4. You will see a message "This workflow has a workflow_dispatch event trigger."
+# 5. Click the "Run workflow" button on the right side.
+# 6. The workflow will run, and you can click on the run to see the logs,
+#    which will contain the formatted hardware specifications.
+
+name: Check Runner Specifications
+
+# This allows you to run the workflow manually from the Actions tab
+on:
+  workflow_dispatch:
+
+jobs:
+  # A single job in this workflow, named "check-specs"
+  check-specs:
+    # The type of runner that the job will run on. 
+    # 'ubuntu-latest' is a standard, widely used virtual environment.
+    runs-on: ubuntu-latest
+
+    steps:
+      # This is the main step that executes the commands.
+      - name: Display Runner Specifications in Human-Readable Format
+        run: |
+          # The 'echo' commands are used to create nice-looking headers for each section.
+          echo " "
+          echo "========================================="
+          echo "   HARDWARE & OS SPECIFICATIONS"
+          echo "========================================="
+          echo " "
+          
+          # --- CPU Information ---
+          # 'lscpu' is a standard Linux command to display CPU architecture information.
+          # 'grep' filters the output to find specific lines.
+          # 'sed' is used to remove the label (e.g., "Model name:") to make it cleaner.
+          echo "--- CPU (Processor) ---"
+          echo "Model:            $(lscpu | grep 'Model name:' | sed 's/Model name:[[:space:]]*//')"
+          echo "Cores:            $(lscpu | grep '^CPU(s):' | sed 's/CPU(s):[[:space:]]*//')"
+          echo "Architecture:     $(lscpu | grep 'Architecture:' | sed 's/Architecture:[[:space:]]*//')"
+          echo " "
+
+          # --- Memory (RAM) Information ---
+          # 'free -h' displays the total, used, and free memory in a human-readable format (e.g., GB, MB).
+          echo "--- Memory (RAM) ---"
+          free -h
+          echo " "
+
+          # --- Disk Space Information ---
+          # 'df -h' reports file system disk space usage in a human-readable format.
+          echo "--- Disk Space ---"
+          df -h
+          echo " "
+          
+          # --- OS Information ---
+          # 'lsb_release -d' shows the description of the Linux distribution.
+          # 'uname -r' shows the kernel release version.
+          echo "--- Operating System ---"
+          echo "OS Version:       $(lsb_release -d | sed 's/Description:[[:space:]]*//')"
+          echo "Kernel Version:   $(uname -r)"
+          echo " "
+          echo "========================================="
+          echo "            CHECK COMPLETE"
+          echo "========================================="
+          echo " "
