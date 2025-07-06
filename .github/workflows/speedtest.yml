@@ -1,0 +1,44 @@
+# This is a GitHub Actions workflow to test the internet speed of the runner.
+# To use it, create a file named `speed-test.yml` (or any other .yml name)
+# inside the `.github/workflows/` directory of your repository.
+#
+# How to run it:
+# 1. Commit this file to your repository.
+# 2. Go to the "Actions" tab in your GitHub repository.
+# 3. In the left sidebar, you will see "Network Speed Test". Click on it.
+# 4. Click the "Run workflow" button on the right side.
+# 5. The workflow will run, and you can click on the run to see the logs,
+#    which will contain the speed test results.
+
+name: Network Speed Test
+
+# This allows you to run the workflow manually from the Actions tab
+on:
+  workflow_dispatch:
+
+jobs:
+  # A single job in this workflow, named "speed-test"
+  speed-test:
+    # The type of runner that the job will run on.
+    runs-on: ubuntu-latest
+
+    steps:
+      # The first step is to install the speedtest-cli tool.
+      - name: Install speedtest-cli
+        run: |
+          # We first need to update the package list from the repositories.
+          sudo apt-get update
+          # Then we install the speedtest-cli package. The '-y' flag automatically answers yes to prompts.
+          sudo apt-get install -y speedtest-cli
+
+      # The second step runs the actual speed test.
+      - name: Run Speed Test
+        run: |
+          # This command executes the speed test.
+          # The tool automatically detects the server, ISP, and measures download/upload speeds.
+          # The output is already in a clear, human-readable format.
+          echo "Running network speed test..."
+          echo "========================================="
+          speedtest-cli
+          echo "========================================="
+          echo "Test complete."
